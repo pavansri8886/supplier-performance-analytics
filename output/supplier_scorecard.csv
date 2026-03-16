@@ -1,0 +1,26 @@
+supplier_id,supplier_name,supplier_country,category,total_orders,total_value,on_time_rate,quality_rate,invoice_rate,avg_defect_rate,avg_delay_days,temp_breach_rate,performance_score,tier,trend_6m,trend_signal,risk_flags,risk_level
+SUP025,Planzer Transport AG,Switzerland,Dry Goods,227,2276481.0,96.5,97.4,98.2,1.56,0.2,0.0,97.2,⭐ Preferred,-7.4,📉 Deteriorating,Performance dropping fast (-7.4pp in 6m),HIGH
+SUP004,Hellmann Worldwide,Germany,Dry Goods,215,1527235.0,92.1,94.9,98.1,1.85,0.5,0.0,94.6,⭐ Preferred,0.4,➡️ Stable,No issues,LOW
+SUP008,FM Logistic France,France,Dry Goods,184,1413915.0,92.9,94.0,96.2,1.72,0.5,0.0,94.1,⭐ Preferred,-0.5,➡️ Stable,No issues,LOW
+SUP009,Vos Logistics BV,Netherlands,Dry Goods,214,1765883.0,90.2,93.9,97.2,1.85,0.5,0.0,93.2,⭐ Preferred,6.7,📈 Improving,No issues,LOW
+SUP023,Wincanton PLC,UK,Dry Goods,191,1764041.0,89.0,95.3,94.2,1.82,0.9,0.0,92.5,⭐ Preferred,-1.0,➡️ Stable,No issues,LOW
+SUP018,Katoen Natie NV,Belgium,Dry Goods,196,1833768.0,92.3,91.3,93.9,2.15,0.5,0.0,92.4,⭐ Preferred,-1.1,➡️ Stable,No issues,LOW
+SUP011,Jan de Rijk Logistics,Netherlands,Frozen,114,993835.0,86.0,95.6,96.5,1.66,0.7,3.5,92.0,⭐ Preferred,-9.5,📉 Deteriorating,Performance dropping fast (-9.5pp in 6m),HIGH
+SUP001,Müller Logistik GmbH,Germany,Dry Goods,190,1542438.0,90.0,94.2,90.5,1.78,0.6,0.0,91.6,⭐ Preferred,-7.2,📉 Deteriorating,Performance dropping fast (-7.2pp in 6m),HIGH
+SUP014,ID Logistics España,Spain,Dry Goods,196,1432366.0,90.3,90.3,92.9,2.15,0.6,0.0,90.9,⭐ Preferred,-3.5,📉 Deteriorating,No issues,LOW
+SUP015,BRT Corriere Espresso,Italy,Dry Goods,196,1512933.0,89.8,90.3,91.8,2.04,0.5,0.0,90.5,⭐ Preferred,-5.3,📉 Deteriorating,Performance dropping fast (-5.3pp in 6m),HIGH
+SUP006,Bolloré Logistics,France,Chilled,126,1184771.0,87.3,94.4,88.1,1.74,0.8,2.4,90.0,🟢 Performing,-7.8,📉 Deteriorating,Performance dropping fast (-7.8pp in 6m),HIGH
+SUP005,Geodis France SAS,France,Dry Goods,206,1789961.0,89.8,88.3,91.7,2.15,0.7,0.0,89.8,🟢 Performing,0.4,➡️ Stable,No issues,LOW
+SUP024,Culina Group Ltd,UK,Chilled,120,1013152.0,85.8,89.2,93.3,2.19,1.0,5.0,88.9,🟢 Performing,2.9,📈 Improving,No issues,LOW
+SUP002,Bayern Transport AG,Germany,Chilled,110,833871.0,87.3,84.5,90.0,2.37,0.8,8.2,87.0,🟢 Performing,-6.4,📉 Deteriorating,Quality below 85% (84.5%) | Performance dropping fast (-6.4pp in 6m) | Temperature breach rate 8.2%,HIGH
+SUP003,Rhenus Supply Chain,Germany,Frozen,137,1046744.0,81.8,89.1,91.2,2.3,0.9,3.6,86.7,🟢 Performing,-9.3,📉 Deteriorating,Performance dropping fast (-9.3pp in 6m),HIGH
+SUP020,ROHLIG SUUS Logistics,Poland,Dry Goods,190,1212536.0,86.3,87.9,85.8,2.43,0.9,0.0,86.7,🟢 Performing,-3.4,📉 Deteriorating,No issues,LOW
+SUP017,GLS Italy Srl,Italy,Chilled,121,1154868.0,85.1,86.8,89.3,2.19,1.1,5.0,86.7,🟢 Performing,1.9,➡️ Stable,No issues,LOW
+SUP012,Grupo Logista SA,Spain,Dry Goods,191,1405315.0,81.7,90.6,86.9,2.06,1.1,0.0,86.1,🟢 Performing,-4.2,📉 Deteriorating,No issues,LOW
+SUP021,Raben Group Poland,Poland,Frozen,128,890671.0,78.1,89.8,91.4,2.11,1.6,2.3,85.5,🟢 Performing,9.0,📈 Improving,On-time below 80% (78.1%),MEDIUM
+SUP013,Transportes Ochoa,Spain,Chilled,121,915478.0,84.3,87.6,83.5,2.37,0.9,5.8,85.3,🟢 Performing,-9.2,📉 Deteriorating,Performance dropping fast (-9.2pp in 6m) | Temperature breach rate 5.8%,HIGH
+SUP010,Bakker Logistiek BV,Netherlands,Chilled,114,955847.0,83.3,81.6,87.7,2.76,1.2,7.0,83.8,🟢 Performing,-10.9,📉 Deteriorating,Quality below 85% (81.6%) | Performance dropping fast (-10.9pp in 6m) | Temperature breach rate 7.0%,HIGH
+SUP016,Fercam SpA,Italy,Frozen,105,834476.0,77.1,86.7,89.5,2.6,1.5,4.8,83.6,🟢 Performing,1.4,➡️ Stable,On-time below 80% (77.1%),MEDIUM
+SUP007,Norbert Dentressangle,France,Frozen,137,1073679.0,77.4,82.5,82.5,2.61,1.3,5.8,80.5,🟡 Needs Improvement,-12.3,📉 Deteriorating,On-time below 80% (77.4%) | Quality below 85% (82.5%) | Performance dropping fast (-12.3pp in 6m) | Temperature breach rate 5.8%,HIGH
+SUP022,Pekaes SA,Poland,Dry Goods,214,1231567.0,79.4,79.9,81.3,2.73,1.1,0.0,80.1,🟡 Needs Improvement,-2.3,📉 Deteriorating,On-time below 80% (79.4%) | Quality below 85% (79.9%),MEDIUM
+SUP019,Eurilogistic SA,Belgium,Chilled,111,991997.0,73.9,81.1,74.8,2.59,1.8,11.7,76.6,🟡 Needs Improvement,-1.8,➡️ Stable,On-time below 80% (73.9%) | Quality below 85% (81.1%) | Temperature breach rate 11.7%,HIGH

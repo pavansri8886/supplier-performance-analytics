@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Supplier Performance Analytics Dashboard</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
+body { background:#0D1117; color:#E6EDF3; }
+.hero { background:linear-gradient(135deg,#0d1b2a 0%,#1a0533 100%);
+         border-bottom:1px solid #21262D; padding:36px 48px 28px; }
+.hero h1 { font-size:1.8rem; font-weight:700; color:#E879F9; margin-bottom:6px; }
+.hero p { color:#94A3B8; font-size:0.9rem; max-width:700px; line-height:1.6; }
+.hero .meta { margin-top:14px; display:flex; gap:20px; flex-wrap:wrap; }
+.hero .meta span { font-size:0.78rem; color:#7B9EB8; }
+.hero .meta strong { color:#60A5FA; }
+.container { max-width:1400px; margin:0 auto; padding:28px 48px; }
+.kpi-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin-bottom:28px; }
+.kpi { background:#161B22; border:1px solid #30363D; border-radius:12px; padding:18px 20px; }
+.kpi .val { font-size:1.8rem; font-weight:700; margin-bottom:4px; }
+.kpi .lbl { font-size:0.7rem; color:#8B949E; text-transform:uppercase; letter-spacing:0.08em; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; margin-bottom:20px; }
+.card { background:#161B22; border:1px solid #30363D; border-radius:14px; padding:22px; }
+.card h2 { font-size:0.95rem; font-weight:700; color:#E6EDF3; margin-bottom:4px; }
+.card .sub { font-size:0.75rem; color:#8B949E; margin-bottom:18px; }
+.sec { font-size:0.68rem; font-weight:700; color:#A78BFA; text-transform:uppercase;
+        letter-spacing:0.12em; margin:24px 0 14px;
+        padding-bottom:8px; border-bottom:1px solid #21262D; }
+.tbl-wrap { overflow-x:auto; border-radius:8px; }
+table { width:100%; border-collapse:collapse; font-size:0.82rem; min-width:900px; }
+th { text-align:left; padding:10px 12px; background:#0D1117; color:#8B949E;
+      font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; }
+td { padding:10px 12px; border-bottom:1px solid #21262D; }
+tr:hover td { background:#1C2128; }
+tr:last-child td { border-bottom:none; }
+.insight { background:#0d2137; border-left:3px solid #3B82F6; border-radius:0 8px 8px 0;
+            padding:12px 16px; margin:8px 0; font-size:0.85rem; color:#CBD5E1; line-height:1.6; }
+.insight.red { border-left-color:#F85149; background:#2d0d0d; }
+.insight.green { border-left-color:#3FB950; background:#0d2018; }
+.insight.orange { border-left-color:#F59E0B; background:#2d1f0a; }
+footer { border-top:1px solid #21262D; padding:20px 48px; color:#8B949E;
+          font-size:0.78rem; display:flex; justify-content:space-between; }
+footer a { color:#60A5FA; text-decoration:none; }
+@media(max-width:900px) {
+  .kpi-grid { grid-template-columns:repeat(3,1fr); }
+  .grid2,.grid3 { grid-template-columns:1fr; }
+  .container { padding:20px; }
+}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>📦 Supplier Performance Analytics Dashboard</h1>
+  <p>12-month logistics supplier scorecard across 25 European suppliers, 7 destination markets
+  and 4,054 orders. Tracks on-time delivery, quality, invoice accuracy, trend direction and risk flags
+  to support procurement decisions and supplier contract reviews.</p>
+  <div class="meta">
+    <span>📅 <strong>Jan – Dec 2024</strong></span>
+    <span>🏭 <strong>25</strong> suppliers</span>
+    <span>🌍 <strong>9</strong> origin countries</span>
+    <span>🚚 <strong>7</strong> destination markets</span>
+    <span>📦 <strong>4,054</strong> orders analysed</span>
+  </div>
+</div>
+
+<div class="container">
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="val" style="color:#E879F9">4,054</div><div class="lbl">Total Orders</div></div>
+  <div class="kpi"><div class="val" style="color:#60A5FA">€32.6M</div><div class="lbl">Total Value</div></div>
+  <div class="kpi"><div class="val" style="color:#3FB950">86.8%</div><div class="lbl">Overall On-Time</div></div>
+  <div class="kpi"><div class="val" style="color:#A78BFA">90.0%</div><div class="lbl">Quality Pass Rate</div></div>
+  <div class="kpi"><div class="val" style="color:#F85149">11</div><div class="lbl">High Risk Suppliers</div></div>
+  <div class="kpi"><div class="val" style="color:#F59E0B">10</div><div class="lbl">Preferred Partners</div></div>
+</div>
+
+<p class="sec">Performance Trends & Seasonality</p>
+<div class="grid2">
+  <div class="card">
+    <h2>Monthly On-Time Rate — Top 5 Suppliers by Value</h2>
+    <p class="sub">Track which suppliers are improving or deteriorating over 12 months</p>
+    <div id="trend-chart" style="height:300px"></div>
+  </div>
+  <div class="card">
+    <h2>Seasonal Performance Pattern</h2>
+    <p class="sub">Red bars = Q4 stress period — on-time rates drop as peak season hits</p>
+    <div id="seasonal-chart" style="height:300px"></div>
+  </div>
+</div>
+
+<p class="sec">Geographic & Category Analysis</p>
+<div class="grid2">
+  <div class="card">
+    <h2>On-Time Rate by Origin Country → Destination Market</h2>
+    <p class="sub">Lane performance heatmap — identify weak delivery corridors</p>
+    <div id="lane-chart" style="height:320px"></div>
+  </div>
+  <div class="card">
+    <h2>Performance by Product Category</h2>
+    <p class="sub">Chilled and Frozen supply chains have tighter SLAs and higher risk</p>
+    <div id="cat-chart" style="height:200px"></div>
+    <br>
+    <div class="insight red">
+      ❄️ <strong>Cold Chain Alert:</strong> Chilled and Frozen categories show higher temperature breach rates.
+      SUP007 (Norbert Dentressangle) and SUP019 (Eurilogistic) flagged as HIGH RISK — immediate contract review recommended.
+    </div>
+    <div class="insight green">
+      ✅ <strong>Top Lane:</strong> Netherlands → Germany corridor shows strongest on-time performance.
+      Bakker Logistiek (SUP010) trending +-10.9pp over 6 months.
+    </div>
+  </div>
+</div>
+
+<p class="sec">Full Supplier Scorecard</p>
+<div class="card">
+  <h2>All Suppliers — Performance Score, Tier and Risk Classification</h2>
+  <p class="sub">Weighted score: On-time 40% · Quality 35% · Invoice accuracy 25% · Trend based on H1 vs H2 on-time delta</p>
+  <br>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Supplier</th><th>Country</th><th>Category</th>
+        <th>On-Time</th><th>Quality</th><th>Invoice</th>
+        <th>Score</th><th>Tier</th><th>6-Month Trend</th><th>Risk</th>
+      </tr></thead>
+      <tbody><tr>
+        <td style="font-weight:600;color:#E6EDF3">Planzer Transport AG</td>
+        <td style="color:#94A3B8">Switzerland</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">96.5%</td>
+        <td style="color:#A78BFA;font-weight:600">97.4%</td>
+        <td style="color:#34D399;font-weight:600">98.2%</td>
+        <td style="font-weight:700;font-size:1.1em">97.2</td>
+        <td><span style="color:#3FB950;font-weight:600">⭐ Preferred</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-7.4pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Hellmann Worldwide</td>
+        <td style="color:#94A3B8">Germany</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">92.1%</td>
+        <td style="color:#A78BFA;font-weight:600">94.9%</td>
+        <td style="color:#34D399;font-weight:600">98.1%</td>
+        <td style="font-weight:700;font-size:1.1em">94.6</td>
+        <td><span style="color:#3FB950;font-weight:600">⭐ Preferred</span></td>
+        <td><span style="color:#8B949E">➡️ Stable (+0.4pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">FM Logistic France</td>
+        <td style="color:#94A3B8">France</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">92.9%</td>
+        <td style="color:#A78BFA;font-weight:600">94.0%</td>
+        <td style="color:#34D399;font-weight:600">96.2%</td>
+        <td style="font-weight:700;font-size:1.1em">94.1</td>
+        <td><span style="color:#3FB950;font-weight:600">⭐ Preferred</span></td>
+        <td><span style="color:#8B949E">➡️ Stable (-0.5pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Vos Logistics BV</td>
+        <td style="color:#94A3B8">Netherlands</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">90.2%</td>
+        <td style="color:#A78BFA;font-weight:600">93.9%</td>
+        <td style="color:#34D399;font-weight:600">97.2%</td>
+        <td style="font-weight:700;font-size:1.1em">93.2</td>
+        <td><span style="color:#3FB950;font-weight:600">⭐ Preferred</span></td>
+        <td><span style="color:#3FB950">📈 Improving (+6.7pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Wincanton PLC</td>
+        <td style="color:#94A3B8">UK</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">89.0%</td>
+        <td style="color:#A78BFA;font-weight:600">95.3%</td>
+        <td style="color:#34D399;font-weight:600">94.2%</td>
+        <td style="font-weight:700;font-size:1.1em">92.5</td>
+        <td><span style="color:#3FB950;font-weight:600">⭐ Preferred</span></td>
+        <td><span style="color:#8B949E">➡️ Stable (-1.0pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Katoen Natie NV</td>
+        <td style="color:#94A3B8">Belgium</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">92.3%</td>
+        <td style="color:#A78BFA;font-weight:600">91.3%</td>
+        <td style="color:#34D399;font-weight:600">93.9%</td>
+        <td style="font-weight:700;font-size:1.1em">92.4</td>
+        <td><span style="color:#3FB950;font-weight:600">⭐ Preferred</span></td>
+        <td><span style="color:#8B949E">➡️ Stable (-1.1pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Jan de Rijk Logistics</td>
+        <td style="color:#94A3B8">Netherlands</td>
+        <td style="color:#94A3B8">Frozen</td>
+        <td style="color:#60A5FA;font-weight:600">86.0%</td>
+        <td style="color:#A78BFA;font-weight:600">95.6%</td>
+        <td style="color:#34D399;font-weight:600">96.5%</td>
+        <td style="font-weight:700;font-size:1.1em">92.0</td>
+        <td><span style="color:#3FB950;font-weight:600">⭐ Preferred</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-9.5pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Müller Logistik GmbH</td>
+        <td style="color:#94A3B8">Germany</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">90.0%</td>
+        <td style="color:#A78BFA;font-weight:600">94.2%</td>
+        <td style="color:#34D399;font-weight:600">90.5%</td>
+        <td style="font-weight:700;font-size:1.1em">91.6</td>
+        <td><span style="color:#3FB950;font-weight:600">⭐ Preferred</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-7.2pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">ID Logistics España</td>
+        <td style="color:#94A3B8">Spain</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">90.3%</td>
+        <td style="color:#A78BFA;font-weight:600">90.3%</td>
+        <td style="color:#34D399;font-weight:600">92.9%</td>
+        <td style="font-weight:700;font-size:1.1em">90.9</td>
+        <td><span style="color:#3FB950;font-weight:600">⭐ Preferred</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-3.5pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">BRT Corriere Espresso</td>
+        <td style="color:#94A3B8">Italy</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">89.8%</td>
+        <td style="color:#A78BFA;font-weight:600">90.3%</td>
+        <td style="color:#34D399;font-weight:600">91.8%</td>
+        <td style="font-weight:700;font-size:1.1em">90.5</td>
+        <td><span style="color:#3FB950;font-weight:600">⭐ Preferred</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-5.3pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Bolloré Logistics</td>
+        <td style="color:#94A3B8">France</td>
+        <td style="color:#94A3B8">Chilled</td>
+        <td style="color:#60A5FA;font-weight:600">87.3%</td>
+        <td style="color:#A78BFA;font-weight:600">94.4%</td>
+        <td style="color:#34D399;font-weight:600">88.1%</td>
+        <td style="font-weight:700;font-size:1.1em">90.0</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-7.8pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Geodis France SAS</td>
+        <td style="color:#94A3B8">France</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">89.8%</td>
+        <td style="color:#A78BFA;font-weight:600">88.3%</td>
+        <td style="color:#34D399;font-weight:600">91.7%</td>
+        <td style="font-weight:700;font-size:1.1em">89.8</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#8B949E">➡️ Stable (+0.4pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Culina Group Ltd</td>
+        <td style="color:#94A3B8">UK</td>
+        <td style="color:#94A3B8">Chilled</td>
+        <td style="color:#60A5FA;font-weight:600">85.8%</td>
+        <td style="color:#A78BFA;font-weight:600">89.2%</td>
+        <td style="color:#34D399;font-weight:600">93.3%</td>
+        <td style="font-weight:700;font-size:1.1em">88.9</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#3FB950">📈 Improving (+2.9pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Bayern Transport AG</td>
+        <td style="color:#94A3B8">Germany</td>
+        <td style="color:#94A3B8">Chilled</td>
+        <td style="color:#60A5FA;font-weight:600">87.3%</td>
+        <td style="color:#A78BFA;font-weight:600">84.5%</td>
+        <td style="color:#34D399;font-weight:600">90.0%</td>
+        <td style="font-weight:700;font-size:1.1em">87.0</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-6.4pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Rhenus Supply Chain</td>
+        <td style="color:#94A3B8">Germany</td>
+        <td style="color:#94A3B8">Frozen</td>
+        <td style="color:#60A5FA;font-weight:600">81.8%</td>
+        <td style="color:#A78BFA;font-weight:600">89.1%</td>
+        <td style="color:#34D399;font-weight:600">91.2%</td>
+        <td style="font-weight:700;font-size:1.1em">86.7</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-9.3pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">ROHLIG SUUS Logistics</td>
+        <td style="color:#94A3B8">Poland</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">86.3%</td>
+        <td style="color:#A78BFA;font-weight:600">87.9%</td>
+        <td style="color:#34D399;font-weight:600">85.8%</td>
+        <td style="font-weight:700;font-size:1.1em">86.7</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-3.4pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">GLS Italy Srl</td>
+        <td style="color:#94A3B8">Italy</td>
+        <td style="color:#94A3B8">Chilled</td>
+        <td style="color:#60A5FA;font-weight:600">85.1%</td>
+        <td style="color:#A78BFA;font-weight:600">86.8%</td>
+        <td style="color:#34D399;font-weight:600">89.3%</td>
+        <td style="font-weight:700;font-size:1.1em">86.7</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#8B949E">➡️ Stable (+1.9pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Grupo Logista SA</td>
+        <td style="color:#94A3B8">Spain</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">81.7%</td>
+        <td style="color:#A78BFA;font-weight:600">90.6%</td>
+        <td style="color:#34D399;font-weight:600">86.9%</td>
+        <td style="font-weight:700;font-size:1.1em">86.1</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-4.2pp)</span></td>
+        <td><span style="color:#3FB950;font-weight:600">LOW</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Raben Group Poland</td>
+        <td style="color:#94A3B8">Poland</td>
+        <td style="color:#94A3B8">Frozen</td>
+        <td style="color:#60A5FA;font-weight:600">78.1%</td>
+        <td style="color:#A78BFA;font-weight:600">89.8%</td>
+        <td style="color:#34D399;font-weight:600">91.4%</td>
+        <td style="font-weight:700;font-size:1.1em">85.5</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#3FB950">📈 Improving (+9.0pp)</span></td>
+        <td><span style="color:#F59E0B;font-weight:600">MEDIUM</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Transportes Ochoa</td>
+        <td style="color:#94A3B8">Spain</td>
+        <td style="color:#94A3B8">Chilled</td>
+        <td style="color:#60A5FA;font-weight:600">84.3%</td>
+        <td style="color:#A78BFA;font-weight:600">87.6%</td>
+        <td style="color:#34D399;font-weight:600">83.5%</td>
+        <td style="font-weight:700;font-size:1.1em">85.3</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-9.2pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Bakker Logistiek BV</td>
+        <td style="color:#94A3B8">Netherlands</td>
+        <td style="color:#94A3B8">Chilled</td>
+        <td style="color:#60A5FA;font-weight:600">83.3%</td>
+        <td style="color:#A78BFA;font-weight:600">81.6%</td>
+        <td style="color:#34D399;font-weight:600">87.7%</td>
+        <td style="font-weight:700;font-size:1.1em">83.8</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-10.9pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Fercam SpA</td>
+        <td style="color:#94A3B8">Italy</td>
+        <td style="color:#94A3B8">Frozen</td>
+        <td style="color:#60A5FA;font-weight:600">77.1%</td>
+        <td style="color:#A78BFA;font-weight:600">86.7%</td>
+        <td style="color:#34D399;font-weight:600">89.5%</td>
+        <td style="font-weight:700;font-size:1.1em">83.6</td>
+        <td><span style="color:#60A5FA;font-weight:600">🟢 Performing</span></td>
+        <td><span style="color:#8B949E">➡️ Stable (+1.4pp)</span></td>
+        <td><span style="color:#F59E0B;font-weight:600">MEDIUM</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Norbert Dentressangle</td>
+        <td style="color:#94A3B8">France</td>
+        <td style="color:#94A3B8">Frozen</td>
+        <td style="color:#60A5FA;font-weight:600">77.4%</td>
+        <td style="color:#A78BFA;font-weight:600">82.5%</td>
+        <td style="color:#34D399;font-weight:600">82.5%</td>
+        <td style="font-weight:700;font-size:1.1em">80.5</td>
+        <td><span style="color:#F59E0B;font-weight:600">🟡 Needs Improvement</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-12.3pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Pekaes SA</td>
+        <td style="color:#94A3B8">Poland</td>
+        <td style="color:#94A3B8">Dry Goods</td>
+        <td style="color:#60A5FA;font-weight:600">79.4%</td>
+        <td style="color:#A78BFA;font-weight:600">79.9%</td>
+        <td style="color:#34D399;font-weight:600">81.3%</td>
+        <td style="font-weight:700;font-size:1.1em">80.1</td>
+        <td><span style="color:#F59E0B;font-weight:600">🟡 Needs Improvement</span></td>
+        <td><span style="color:#F85149">📉 Deteriorating (-2.3pp)</span></td>
+        <td><span style="color:#F59E0B;font-weight:600">MEDIUM</span></td>
+    </tr><tr>
+        <td style="font-weight:600;color:#E6EDF3">Eurilogistic SA</td>
+        <td style="color:#94A3B8">Belgium</td>
+        <td style="color:#94A3B8">Chilled</td>
+        <td style="color:#60A5FA;font-weight:600">73.9%</td>
+        <td style="color:#A78BFA;font-weight:600">81.1%</td>
+        <td style="color:#34D399;font-weight:600">74.8%</td>
+        <td style="font-weight:700;font-size:1.1em">76.6</td>
+        <td><span style="color:#F59E0B;font-weight:600">🟡 Needs Improvement</span></td>
+        <td><span style="color:#8B949E">➡️ Stable (-1.8pp)</span></td>
+        <td><span style="color:#F85149;font-weight:600">HIGH</span></td>
+    </tr></tbody>
+    </table>
+  </div>
+</div>
+
+<p class="sec">Strategic Recommendations</p>
+<div class="grid3">
+  <div class="card">
+    <h2>🔴 Immediate Actions</h2>
+    <p class="sub">High risk suppliers requiring intervention</p>
+    <br>
+    <div class="insight red">SUP007 Norbert Dentressangle — on-time dropping fast. Temperature breach risk. Escalate to account manager and initiate SLA review within 30 days.</div>
+    <div class="insight red">SUP019 Eurilogistic — new supplier showing early deterioration. Consider volume reduction until performance stabilises above 85%.</div>
+    <div class="insight red">SUP005 Geodis France — significant 6-month decline. Review root cause with supplier before Q4 volume ramp-up.</div>
+  </div>
+  <div class="card">
+    <h2>🟡 Monitor Closely</h2>
+    <p class="sub">Showing early warning signals</p>
+    <br>
+    <div class="insight orange">SUP002 Bayern Transport — chilled specialist with declining on-time rate. Q4 dependency makes this high priority to resolve before October.</div>
+    <div class="insight orange">SUP013 Transportes Ochoa — Spanish market coverage at risk. Identify backup supplier for Iberian lanes.</div>
+    <div class="insight orange">SUP022 Pekaes SA — lowest price index but deteriorating quality. Cost savings may be offset by rework and delays.</div>
+  </div>
+  <div class="card">
+    <h2>⭐ Expand Partnership</h2>
+    <p class="sub">Strong performers worth growing</p>
+    <br>
+    <div class="insight green">SUP010 Bakker Logistiek — strongest improvement trajectory (+-10.9pp). Consider increasing chilled volume allocation for Netherlands hub.</div>
+    <div class="insight green">SUP025 Planzer Transport — consistently highest scores despite premium pricing. Reliable choice for time-sensitive Swiss lanes.</div>
+    <div class="insight green">SUP020 ROHLIG SUUS — strong improvement trend in Eastern Europe. Cost-effective option for Poland hub expansion.</div>
+  </div>
+</div>
+
+</div>
+<footer>
+  <span>Built by <strong>Pavan Kumar Naganaboina</strong> · MSc Data Management & AI, ECE Paris 2025–2026</span>
+  <span><a href="https://github.com/pavansri8886">github.com/pavansri8886</a> · Data: Simulated FMCG logistics dataset</span>
+</footer>
+
+<script>
+const dark = {
+  paper_bgcolor:'#161B22', plot_bgcolor:'#161B22',
+  font:{color:'#E6EDF3',family:'Segoe UI',size:11},
+  margin:{t:10,b:40,l:50,r:20},
+  xaxis:{gridcolor:'#21262D',color:'#8B949E'},
+  yaxis:{gridcolor:'#21262D',color:'#8B949E'},
+};
+
+Plotly.newPlot('trend-chart', [{"x": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "y": [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 90.0, 94.4, 100.0, 91.3, 100.0, 80.0], "name": "Planzer", "type": "scatter", "mode": "lines+markers", "line": {"color": "#E879F9", "width": 2}, "marker": {"size": 5}}, {"x": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "y": [90.0, 85.7, 100.0, 89.5, 94.1, 100.0, 100.0, 100.0, 100.0, 81.0, 87.0, 84.6], "name": "Katoen", "type": "scatter", "mode": "lines+markers", "line": {"color": "#60A5FA", "width": 2}, "marker": {"size": 5}}, {"x": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "y": [100.0, 90.9, 68.4, 95.7, 100.0, 87.5, 95.2, 80.0, 100.0, 86.4, 83.3, 100.0], "name": "Geodis", "type": "scatter", "mode": "lines+markers", "line": {"color": "#3FB950", "width": 2}, "marker": {"size": 5}}, {"x": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "y": [82.6, 100.0, 87.5, 95.5, 73.3, 82.6, 94.1, 95.5, 100.0, 94.4, 88.9, 88.9], "name": "Vos", "type": "scatter", "mode": "lines+markers", "line": {"color": "#F59E0B", "width": 2}, "marker": {"size": 5}}, {"x": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "y": [82.4, 87.0, 100.0, 84.0, 86.4, 100.0, 90.9, 87.5, 100.0, 70.0, 85.7, 100.0], "name": "Wincanton", "type": "scatter", "mode": "lines+markers", "line": {"color": "#F87171", "width": 2}, "marker": {"size": 5}}], {
+  ...dark, showlegend:true,
+  legend:{bgcolor:'#161B22',bordercolor:'#30363D',font:{size:10}},
+  yaxis:{...dark.yaxis, title:'On-Time Rate %', range:[60,100]},
+}, {responsive:true});
+
+Plotly.newPlot('seasonal-chart', [{"x": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "y": [88.6, 88.2, 90.9, 89.1, 85.9, 86.2, 89.0, 86.5, 89.5, 81.5, 81.7, 85.1], "type": "bar", "marker": {"color": ["#60A5FA", "#60A5FA", "#60A5FA", "#60A5FA", "#60A5FA", "#60A5FA", "#60A5FA", "#60A5FA", "#60A5FA", "#F85149", "#F85149", "#F85149"]}, "name": "On-time Rate %"}], {
+  ...dark,
+  yaxis:{...dark.yaxis, title:'On-Time Rate %', range:[75,100]},
+}, {responsive:true});
+
+Plotly.newPlot('lane-chart', [{
+  z: [[89.6, 78.6, 92.0, 88.4, 79.1, 80.6, 88.9], [83.0, 86.7, 86.6, 89.6, 93.8, 86.9, 88.8], [90.7, 88.0, 94.1, 88.5, 89.8, 84.8, 83.7], [83.3, 81.0, 78.4, 88.9, 93.5, 89.8, 86.7], [85.2, 86.6, 87.9, 83.8, 88.5, 87.3, 91.8], [83.1, 83.3, 77.8, 84.0, 79.2, 78.5, 85.5], [84.2, 83.3, 86.6, 87.8, 90.5, 81.0, 86.5], [96.6, 97.0, 93.1, 100.0, 97.0, 97.2, 94.1], [87.5, 92.0, 86.0, 93.2, 77.5, 93.2, 83.3]],
+  x: ["Belgium", "France", "Germany", "Italy", "Netherlands", "Poland", "Spain"],
+  y: ["Belgium", "France", "Germany", "Italy", "Netherlands", "Poland", "Spain", "Switzerland", "UK"],
+  type:'heatmap',
+  colorscale:[['0','#F85149'],['0.5','#F59E0B'],['1','#3FB950']],
+  showscale:true,
+  text: [["90%", "79%", "92%", "88%", "79%", "81%", "89%"], ["83%", "87%", "87%", "90%", "94%", "87%", "89%"], ["91%", "88%", "94%", "88%", "90%", "85%", "84%"], ["83%", "81%", "78%", "89%", "94%", "90%", "87%"], ["85%", "87%", "88%", "84%", "88%", "87%", "92%"], ["83%", "83%", "78%", "84%", "79%", "78%", "86%"], ["84%", "83%", "87%", "88%", "90%", "81%", "86%"], ["97%", "97%", "93%", "100%", "97%", "97%", "94%"], ["88%", "92%", "86%", "93%", "78%", "93%", "83%"]],
+  texttemplate:"%{text}",
+  hovertemplate:'%{y} → %{x}: %{z:.1f}%<extra></extra>'
+}], {
+  ...dark, margin:{t:10,b:80,l:80,r:20},
+  xaxis:{...dark.xaxis, tickangle:-30},
+}, {responsive:true});
+
+Plotly.newPlot('cat-chart', [{"x": ["Chilled", "Dry Goods", "Frozen"], "y": [84.0, 89.3, 80.0], "type": "bar", "marker": {"color": ["#60A5FA", "#3FB950", "#F59E0B"]}, "name": "On-time %"}], {
+  ...dark,
+  yaxis:{...dark.yaxis, title:'On-Time %', range:[80,96]},
+}, {responsive:true});
+</script>
+</body>
+</html>

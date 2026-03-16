@@ -1,0 +1,26 @@
+id,name,country,city,category,contract_sla_days,contracted_price_index,years_active,iso_certified,payment_terms
+SUP001,Müller Logistik GmbH,Germany,Hamburg,Dry Goods,5,1.0,8,True,30
+SUP002,Bayern Transport AG,Germany,Munich,Chilled,3,1.12,5,True,45
+SUP003,Rhenus Supply Chain,Germany,Dortmund,Frozen,4,0.98,12,True,30
+SUP004,Hellmann Worldwide,Germany,Osnabrück,Dry Goods,6,0.95,15,True,60
+SUP005,Geodis France SAS,France,Paris,Dry Goods,4,1.05,10,True,30
+SUP006,Bolloré Logistics,France,Lyon,Chilled,3,1.18,7,True,45
+SUP007,Norbert Dentressangle,France,Valence,Frozen,4,1.02,9,False,30
+SUP008,FM Logistic France,France,Metz,Dry Goods,5,0.97,6,True,60
+SUP009,Vos Logistics BV,Netherlands,Oss,Dry Goods,4,1.08,11,True,30
+SUP010,Bakker Logistiek BV,Netherlands,Zeewolde,Chilled,2,1.22,4,True,30
+SUP011,Jan de Rijk Logistics,Netherlands,Roosendaal,Frozen,3,1.15,8,True,45
+SUP012,Grupo Logista SA,Spain,Madrid,Dry Goods,6,0.88,13,True,60
+SUP013,Transportes Ochoa,Spain,Barcelona,Chilled,5,0.92,6,False,45
+SUP014,ID Logistics España,Spain,Valencia,Dry Goods,5,0.9,4,True,30
+SUP015,BRT Corriere Espresso,Italy,Bologna,Dry Goods,5,0.95,9,True,60
+SUP016,Fercam SpA,Italy,Bolzano,Frozen,4,1.05,7,True,45
+SUP017,GLS Italy Srl,Italy,Milan,Chilled,3,1.1,5,True,30
+SUP018,Katoen Natie NV,Belgium,Antwerp,Dry Goods,4,1.08,14,True,30
+SUP019,Eurilogistic SA,Belgium,Liège,Chilled,3,1.14,3,False,45
+SUP020,ROHLIG SUUS Logistics,Poland,Warsaw,Dry Goods,7,0.78,6,True,60
+SUP021,Raben Group Poland,Poland,Poznan,Frozen,6,0.82,8,True,60
+SUP022,Pekaes SA,Poland,Pruszkow,Dry Goods,7,0.75,10,False,90
+SUP023,Wincanton PLC,UK,London,Dry Goods,4,1.15,12,True,30
+SUP024,Culina Group Ltd,UK,Lutterworth,Chilled,3,1.2,7,True,45
+SUP025,Planzer Transport AG,Switzerland,Dietikon,Dry Goods,3,1.35,9,True,30
